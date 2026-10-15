@@ -1,1 +1,62 @@
-export {};
+import type { Lead } from '@/lib/storage';
+
+//даже если файловая система сбросит JSON, менеджер получит заявку
+
+const INTEREST_LABELS: Record<string, string> = {
+    subscription: 'Подписка',
+    'one-time': 'Разовый заказ',
+    question: 'Вопрос',
+};
+
+function buildMessage(lead: Lead): string {
+    const interestLabel = INTEREST_LABELS[lead.interest] ?? lead.interest;
+    const time = new Date(lead.createdAt).toLocaleString('ru-RU', {
+        timeZone: 'Europe/Minsk',
+    });
+
+    const lines = [
+        'Новая заявка с сайта Кварта',
+        '',
+        `Имя: ${lead.name}`,
+        `Телефон: ${lead.phone}`,
+        `Интерес: ${interestLabel}`,
+    ];
+
+    if (lead.comment) {
+        lines.push(`Комментарий: ${lead.comment}`);
+    }
+
+    lines.push(
+        '',
+        `Источник: ${lead.utm.source} / ${lead.utm.medium}`,
+        `Referrer: ${lead.referrer}`,
+        `Время: ${time}`
+    );
+
+    return lines.join('\n');
+}
+
+export async function sendToTelegram(lead: Lead): Promise<void> {
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!token || !chatId) {
+        console.warn('Telegram: не заданы TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID, уведомление пропущено');
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: buildMessage(lead) }),
+        });
+
+        if (!response.ok) {
+            const details = await response.text();
+            console.error(`Telegram: ошибка ${response.status}`, details);
+        }
+    } catch (error) {
+        console.error('Telegram: не удалось отправить сообщение', error);
+    }
+}
