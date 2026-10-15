@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { normalizePhone } from '@/lib/validate-phone';
+import { checkRateLimit, recordSubmission } from '@/lib/rate-limit';
 
 const INTERESTS = ['subscription', 'one-time', 'question'];
 
@@ -26,6 +27,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             );
         }
 
+        const limit = checkRateLimit(normalizedPhone);
+        if (!limit.allowed) {
+            const minutes = Math.ceil((limit.retryAfterMs ?? 0) / 60000);
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: `Вы уже отправляли заявку недавно. Попробуйте через ${minutes} минут или позвоните нам напрямую.`,
+                },
+                { status: 429 }
+            );
+        }
+
         const interest = body?.interest;
         if (typeof interest !== 'string' || !INTERESTS.includes(interest)) {
             return NextResponse.json(
@@ -38,6 +51,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
 
         const comment = typeof body?.comment === 'string' ? body.comment.trim() : '';
+
+        recordSubmission(normalizedPhone);
 
         return NextResponse.json(
             {
