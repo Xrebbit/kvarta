@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Products from '@/components/Products';
 
 const overlay =
   'linear-gradient(to right, rgba(38,26,16,0.88) 0%, rgba(38,26,16,0.8) 15%, rgba(38,26,16,0.8) 28%, rgba(38,26,16,0.7) 36%, rgba(38,26,16,0.55) 44%, rgba(38,26,16,0.35) 52%, rgba(38,26,16,0.2) 62%, rgba(38,26,16,0.12) 100%)';
@@ -95,12 +96,14 @@ export default function Home() {
           <p className="-rotate-6 font-hand text-xl leading-tight text-[#f5efe0] md:text-[1.75vw]">
             Свежая
             <br />
-            обжарка –
+            обжарка —
             <br />
             вкуснее
           </p>
         </div>
       </section>
+
+      <Products />
     </main>
   );
 }
