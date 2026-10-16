@@ -6,6 +6,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-jost)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
         display: ['var(--font-oswald)', 'Impact', 'sans-serif'],
         hand: ['var(--font-caveat)', 'cursive'],
       },
