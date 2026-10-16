@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import About from '@/components/About';
 import Products from '@/components/Products';
 
 const overlay =
@@ -104,6 +105,7 @@ export default function Home() {
       </section>
 
       <Products />
+      <About />
     </main>
   );
 }
