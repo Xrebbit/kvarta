@@ -169,6 +169,7 @@ export default function LeadModal() {
           phone: `+375${digits}`,
           interest,
           comment: comment.trim(),
+          website: String(new FormData(event.currentTarget).get('website') ?? ''),
           ...getAttribution(),
         }),
       });
@@ -296,6 +297,14 @@ export default function LeadModal() {
                   </p>
 
                   <form onSubmit={handleSubmit} noValidate className="mt-[clamp(10px,2.2vh,24px)]">
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                    />
                     <div>
                       <label htmlFor="lead-name" className="mb-1.5 block text-[14px]">
                         Ваше имя <span aria-hidden="true">*</span>

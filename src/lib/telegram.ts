@@ -67,7 +67,7 @@ export async function sendToTelegram(lead: Lead): Promise<boolean> {
 
     return true;
   } catch (error) {
-    console.error('Telegram: не удалось отправить сообщение', error);
+    console.error('Telegram: не удалось отправить сообщение', error instanceof Error ? error.name : 'unknown');
     return false;
   } finally {
     clearTimeout(timeout);
