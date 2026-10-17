@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { normalizePhone } from '@/lib/validate-phone';
-import { checkRateLimit, recordSubmission } from '@/lib/rate-limit';
+import { checkRateLimit, clearSubmission, recordSubmission } from '@/lib/rate-limit';
 import { saveLead, type Lead } from '@/lib/storage';
 import { sendToTelegram } from '@/lib/telegram';
 
@@ -83,13 +83,26 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     recordSubmission(normalizedPhone);
 
+    let saved = false;
     try {
       saveLead(lead);
+      saved = true;
     } catch (error) {
       console.error('Не удалось сохранить заявку в файл', error);
     }
 
-    await sendToTelegram(lead);
+    const notified = await sendToTelegram(lead);
+
+    if (!saved && !notified) {
+      clearSubmission(normalizedPhone);
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Не удалось обработать заявку. Попробуйте позже или позвоните нам напрямую.',
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       {
