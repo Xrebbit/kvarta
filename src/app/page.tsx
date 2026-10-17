@@ -82,9 +82,9 @@ export default function Home() {
           доставляем по пятницам
         </p>
 
-        <div className="absolute bottom-[34%] right-[7%] z-10 flex items-start gap-1 md:bottom-auto md:left-[81.5%] md:right-auto md:top-[59.5%]">
+        <div className="absolute bottom-[30%] right-[8%] z-10 flex flex-col items-end md:bottom-auto md:left-[81.5%] md:right-auto md:top-[59.5%] md:flex-row md:items-start md:gap-1">
           <svg
-            className="mt-2 h-12 w-12 flex-shrink-0 md:h-[3.2vw] md:w-[3.2vw]"
+            className="mt-2 hidden h-[3.2vw] w-[3.2vw] flex-shrink-0 md:block"
             viewBox="0 0 60 60"
             fill="none"
             stroke="#f5efe0"
@@ -104,6 +104,20 @@ export default function Home() {
             <br />
             вкуснее
           </p>
+          <svg
+            className="mr-0 mt-3 h-17 w-10 -translate-y-6 translate-x-2 md:hidden"
+            viewBox="0 0 40 48"
+            fill="none"
+            stroke="#f5efe0"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M 26 4 C 30 8, 36 24, 24 44" />
+            <path d="M 24 44 L 22 33" />
+            <path d="M 24 44 L 33 36" />
+          </svg>
         </div>
       </section>
 

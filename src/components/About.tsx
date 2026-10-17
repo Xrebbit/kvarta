@@ -18,8 +18,22 @@ export default function About() {
             основатели Кварты
             <svg
               aria-hidden="true"
+              viewBox="0 0 50 92"
+              className="absolute left-[103%] top-[35%] h-[55px] w-[40px] md:hidden"
+              fill="none"
+              stroke="#3a2e22"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M 4 8 C 30 4, 46 28, 38 84" />
+              <path d="M 38 84 L 31 73" />
+              <path d="M 38 84 L 46 74" />
+            </svg>
+            <svg
+              aria-hidden="true"
               viewBox="0 0 80 30"
-              className="absolute left-[101%] top-[12%] h-6 w-14 md:h-[1.5vw] md:w-[3.6vw]"
+              className="absolute left-[101%] top-[12%] hidden h-[1.5vw] w-[3.6vw] md:block"
               fill="none"
               stroke="#3a2e22"
               strokeWidth="1.8"
