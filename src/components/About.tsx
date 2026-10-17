@@ -3,15 +3,16 @@ import { paperNoise } from '@/lib/paper';
 
 export default function About() {
   return (
-      <section className="relative overflow-hidden bg-[#eee5d4] pb-12 text-[#1f1812] md:pb-0">
+      <section id="about" className="relative overflow-hidden bg-[#eee5d4] pb-12 text-[#1f1812] md:pb-0">
         <div
+            id="subscription"
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-multiply"
             style={{ backgroundImage: paperNoise }}
         />
 
         <div className="relative md:h-[32.2vw]">
-          <div id="about" className="px-5 pt-12 md:contents md:px-0 md:pt-0">
+          <div className="px-5 pt-12 md:contents md:px-0 md:pt-0">
             <div className="relative mx-auto w-[78%] max-w-sm md:absolute md:left-[13.3vw] md:top-[4.8vw] md:mx-0 md:w-[24.6vw] md:max-w-none">
               <div
                   aria-hidden="true"
@@ -85,7 +86,6 @@ export default function About() {
           </div>
 
           <div
-              id="subscription"
               className="relative mx-5 mt-12 min-h-[440px] overflow-hidden bg-[#1a120c] text-[#f5efe0] md:absolute md:left-[69.5vw] md:top-[3vw] md:mx-0 md:mt-0 md:h-[26.8vw] md:min-h-0 md:w-[26.7vw]"
           >
             <Image

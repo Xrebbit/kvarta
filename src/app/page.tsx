@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import About from '@/components/About';
+import LeadModal from '@/components/LeadModal';
 import Products from '@/components/Products';
 
 const overlay =
@@ -106,6 +107,7 @@ export default function Home() {
 
       <Products />
       <About />
+      <LeadModal />
     </main>
   );
 }
