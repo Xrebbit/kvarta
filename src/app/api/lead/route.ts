@@ -14,6 +14,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
 
+    if (body.website) {
+      return NextResponse.json(
+          { success: false, message: 'Bot detected' },
+          { status: 400 }
+      );
+    }
+
     const name = optionalString(body?.name, 100);
     if (name.length < 2) {
       return NextResponse.json(

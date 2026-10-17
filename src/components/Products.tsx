@@ -134,7 +134,7 @@ export default function Products() {
             alt="Штамп Кварта, Минск, с 2019 года"
             width={1074}
             height={675}
-            className="mt-6 w-44 opacity-70 mix-blend-multiply md:absolute md:right-[0.3vw] md:top-[-0.4vw] md:mt-0 md:w-[16vw]"
+            className="pointer-events-none absolute -top-10 right-[-6px] w-[116px] opacity-70 mix-blend-multiply md:right-[0.3vw] md:top-[-0.4vw] md:w-[16vw]"
           />
         </div>
 
@@ -150,7 +150,7 @@ export default function Products() {
         >
           <div
             onTransitionEnd={handleTransitionEnd}
-            className="flex [--gap:16px] [--pv:1] md:[--gap:2.25vw] md:[--pv:2] lg:[--pv:3]"
+            className="flex [--gap:14px] [--pv:1.12] md:[--gap:2.25vw] md:[--pv:2] lg:[--pv:3]"
             style={
               {
                 '--i': index,

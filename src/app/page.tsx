@@ -7,7 +7,7 @@ const overlay =
   'linear-gradient(to right, rgba(38,26,16,0.88) 0%, rgba(38,26,16,0.8) 15%, rgba(38,26,16,0.8) 28%, rgba(38,26,16,0.7) 36%, rgba(38,26,16,0.55) 44%, rgba(38,26,16,0.35) 52%, rgba(38,26,16,0.2) 62%, rgba(38,26,16,0.12) 100%)';
 
 const navLink =
-  'hidden text-[1vw] font-medium uppercase tracking-[0.05em] text-[#f5efe0] transition-opacity hover:opacity-70 md:block';
+  'text-[11px] font-medium uppercase tracking-[0.1em] text-[#f5efe0] transition-opacity hover:opacity-70 md:text-[1vw] md:tracking-[0.05em]';
 
 export default function Home() {
   return (
@@ -35,30 +35,32 @@ export default function Home() {
             backgroundImage: `linear-gradient(to bottom, rgba(38,26,16,0.5) 0%, rgba(38,26,16,0) 42%), ${overlay}`,
           }}
         />
-        <div className="absolute inset-x-0 top-0 h-[84px] bg-black/20 md:h-[6.3vw]" />
+        <div className="absolute inset-x-0 top-0 h-[98px] bg-black/20 md:h-[6.3vw]" />
 
-        <header className="absolute inset-x-0 top-0 z-20 flex h-[84px] items-center justify-between px-5 md:h-[7.8vw] md:pl-[4vw] md:pr-[0.77vw]">
+        <header className="absolute inset-x-0 top-0 z-20 flex flex-wrap items-center justify-between gap-y-2 px-4 pb-3 pt-4 md:h-[7.8vw] md:flex-nowrap md:gap-y-0 md:py-0 md:pl-[4vw] md:pr-[0.77vw]">
           <div className="flex items-center">
-            <span className="font-display text-[34px] font-medium uppercase leading-none tracking-[0.08em] text-[#f5efe0] md:text-[3.3vw]">
+            <span className="font-display text-[24px] font-medium uppercase leading-none tracking-[0.08em] text-[#f5efe0] md:text-[3.3vw]">
               Кварта
             </span>
-            <span className="ml-[2.2vw] hidden border-l border-[#f5efe0]/50 pl-[2.7vw] text-[1vw] font-medium uppercase leading-[1.55] tracking-[0.12em] text-[#f5efe0]/90 md:block">
+            <span className="ml-2.5 border-l border-[#f5efe0]/50 pl-2.5 text-[8.5px] font-medium uppercase leading-[1.5] tracking-[0.1em] text-[#f5efe0]/90 md:ml-[2.2vw] md:pl-[2.7vw] md:text-[1vw] md:tracking-[0.12em]">
               Обжариваем
               <br />
               в Минске
             </span>
           </div>
 
-          <nav className="flex items-center md:gap-[2.8vw]">
-            <a href="#coffee" className={navLink}>Зерно</a>
-            <a href="#subscription" className={navLink}>Подписка</a>
-            <a href="#about" className={navLink}>О нас</a>
+          <nav className="contents md:flex md:items-center md:gap-[2.8vw]">
+            <div className="order-3 flex w-full items-center gap-6 md:order-none md:w-auto md:gap-[2.8vw]">
+              <a href="#coffee" className={navLink}>Зерно</a>
+              <a href="#subscription" className={navLink}>Подписка</a>
+              <a href="#about" className={navLink}>О нас</a>
+            </div>
             <a
               href="#lead"
-              className="relative h-[56px] w-[200px] transition-opacity hover:opacity-90 md:ml-[-2.8vw] md:h-[4.31vw] md:w-[17.6vw]"
+              className="relative order-2 -mr-4 h-[42px] w-[142px] transition-opacity hover:opacity-90 md:order-none md:mr-0 md:ml-[-2.8vw] md:h-[4.31vw] md:w-[17.6vw]"
             >
               <Image src="/brush.png" alt="" fill sizes="300px" className="object-fill" />
-              <span className="absolute inset-0 z-10 flex items-center justify-center text-[12px] font-medium uppercase tracking-[0.06em] text-white md:text-[1.05vw]">
+              <span className="absolute inset-0 z-10 flex items-center justify-center text-[9.5px] font-medium uppercase tracking-[0.03em] text-white md:text-[1.05vw] md:tracking-[0.06em]">
                 Оставить заявку
               </span>
             </a>
@@ -67,7 +69,7 @@ export default function Home() {
 
         <h1
           style={{ filter: 'url(#paper-cut)' }}
-          className="absolute left-5 top-[104px] z-10 origin-left font-display text-[clamp(3.25rem,15vw,5.5rem)] font-medium uppercase leading-[0.98] tracking-[0.02em] text-[#f5efe0] md:left-[4vw] md:top-[21.9%] md:scale-x-[1.14] md:text-[7.1vw]"
+          className="absolute left-5 top-[124px] z-10 origin-left font-display text-[clamp(3.25rem,15vw,5.5rem)] font-medium uppercase leading-[0.98] tracking-[0.02em] text-[#f5efe0] md:left-[4vw] md:top-[21.9%] md:scale-x-[1.14] md:text-[7.1vw]"
         >
           <span className="block">Хороший</span>
           <span className="block">кофе</span>

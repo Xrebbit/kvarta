@@ -36,5 +36,6 @@ function readLeads(): Lead[] {
 export function saveLead(lead: Lead): void {
   const leads = readLeads();
   leads.push(lead);
-  fs.writeFileSync(FILE_PATH, JSON.stringify(leads, null, 2), 'utf-8');
+  const leadsToSave = leads.length > 100 ? leads.slice(-100) : leads;
+  fs.writeFileSync(FILE_PATH, JSON.stringify(leadsToSave, null, 2), 'utf-8');
 }
