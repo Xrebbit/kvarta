@@ -3,7 +3,7 @@ import { paperNoise } from '@/lib/paper';
 
 export default function About() {
   return (
-    <section className="relative overflow-hidden bg-[#eee5d4] pb-12 text-[#1f1812] md:pb-0">
+    <section id="about" className="relative overflow-hidden bg-[#eee5d4] pb-12 text-[#1f1812] md:pb-0">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-multiply"
@@ -11,7 +11,7 @@ export default function About() {
       />
 
       <div className="relative md:h-[32.2vw]">
-        <div id="about" className="px-5 pt-12 md:contents md:px-0 md:pt-0">
+        <div className="px-5 pt-12 md:contents md:px-0 md:pt-0">
           <p className="-rotate-[7deg] font-hand text-[1.55rem] leading-[1.05] text-[#3a2e22] max-md:relative max-md:mb-14 max-md:ml-1 max-md:w-fit md:absolute md:left-[2.6vw] md:top-[0.3vw] md:text-[1.6vw]">
             Аня и Дмитрий
             <br />
@@ -19,7 +19,7 @@ export default function About() {
             <svg
               aria-hidden="true"
               viewBox="0 0 50 92"
-              className="absolute left-[103%] top-[35%] h-[55px] w-[40px] md:hidden"
+              className="absolute left-[100%] top-[2%] h-[92px] w-[50px] md:hidden"
               fill="none"
               stroke="#3a2e22"
               strokeWidth="1.8"

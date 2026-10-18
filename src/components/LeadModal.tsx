@@ -20,6 +20,7 @@ const INTERESTS: { value: Interest; label: string }[] = [
 
 const TEXT = {
   name: 'Введите имя, минимум 2 символа',
+  nameLetters: 'В имени можно использовать только буквы',
   phone: 'Введите корректный белорусский номер, например +375 29 123-45-67',
   consent: 'Подтвердите согласие на обработку персональных данных',
   network:
@@ -29,6 +30,8 @@ const TEXT = {
 };
 
 const REQUEST_TIMEOUT_MS = 15000;
+const NAME_FORBIDDEN = /[^\p{L}\s'’.-]/gu;
+const NAME_VALID = /^\p{L}[\p{L}\s'’.-]*$/u;
 
 function formatNational(digits: string): string {
   const a = digits.slice(0, 2);
@@ -134,7 +137,9 @@ export default function LeadModal() {
 
   const validate = (): Errors => {
     const found: Errors = {};
-    if (name.trim().length < 2) found.name = TEXT.name;
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2) found.name = TEXT.name;
+    else if (!NAME_VALID.test(trimmedName)) found.name = TEXT.nameLetters;
     if (normalizePhone(`+375${digits}`) === null) found.phone = TEXT.phone;
     if (!consent) found.consent = TEXT.consent;
     return found;
@@ -186,7 +191,7 @@ export default function LeadModal() {
       } else if (response.status === 400) {
         const message = data?.message ?? TEXT.server;
         if (message.includes('номер')) setErrors({ phone: TEXT.phone });
-        else if (message.includes('Имя')) setErrors({ name: TEXT.name });
+        else if (message.includes('Имя')) setErrors({ name: message });
         else setNotice({ tone: 'error', text: message });
       } else {
         setNotice({ tone: 'error', text: TEXT.server });
@@ -318,8 +323,13 @@ export default function LeadModal() {
                         maxLength={100}
                         value={name}
                         onChange={(event) => {
-                          setName(event.target.value);
-                          if (errors.name) setErrors((current) => ({ ...current, name: undefined }));
+                          const typed = event.target.value;
+                          const cleaned = typed.replace(NAME_FORBIDDEN, '');
+                          setName(cleaned);
+                          setErrors((current) => ({
+                            ...current,
+                            name: cleaned !== typed ? TEXT.nameLetters : undefined,
+                          }));
                         }}
                         placeholder="Как к вам обращаться?"
                         aria-required="true"

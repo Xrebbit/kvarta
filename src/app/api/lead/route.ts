@@ -78,6 +78,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
+    if (!/^\p{L}[\p{L}\s'’.-]*$/u.test(name)) {
+      return NextResponse.json(
+        { success: false, message: 'Имя может содержать только буквы' },
+        { status: 400 }
+      );
+    }
+
     const normalizedPhone = normalizePhone(typeof body.phone === 'string' ? body.phone : '');
     if (normalizedPhone === null) {
       return NextResponse.json(

@@ -105,7 +105,7 @@ export default function Home() {
             вкуснее
           </p>
           <svg
-            className="mr-0 mt-3 h-17 w-10 -translate-y-6 translate-x-2 md:hidden"
+            className="mr-5 mt-1 h-12 w-10 md:hidden"
             viewBox="0 0 40 48"
             fill="none"
             stroke="#f5efe0"
@@ -114,7 +114,7 @@ export default function Home() {
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <path d="M 26 4 C 30 8, 36 24, 24 44" />
+            <path d="M 6 4 C 30 8, 36 24, 24 44" />
             <path d="M 24 44 L 22 33" />
             <path d="M 24 44 L 33 36" />
           </svg>
