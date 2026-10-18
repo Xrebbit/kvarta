@@ -108,7 +108,7 @@ export default function Products() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-multiply"
+        className="pointer-events-none absolute inset-0 opacity-100"
         style={{ backgroundImage: paperNoise }}
       />
 
@@ -134,6 +134,7 @@ export default function Products() {
             alt="Штамп Кварта, Минск, с 2019 года"
             width={1074}
             height={675}
+            sizes="(min-width: 768px) 16vw, 120px"
             className="pointer-events-none absolute -top-10 right-[-6px] w-[116px] opacity-70 mix-blend-multiply md:right-[0.3vw] md:top-[-0.4vw] md:w-[16vw]"
           />
         </div>
@@ -213,7 +214,7 @@ export default function Products() {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-3 md:mt-[1.6vw]">
+        <div className="mt-4 flex justify-center gap-1 md:mt-[1.2vw]">
           {products.map((product, dot) => (
             <button
               key={product.id}
@@ -221,10 +222,14 @@ export default function Products() {
               aria-label={`Показать ${product.name}`}
               aria-current={dot === activeDot}
               onClick={() => goTo(dot)}
-              className={`h-2 w-2 rounded-full border border-[#2c2419]/60 transition-colors ${
-                dot === activeDot ? 'bg-[#2c2419]' : 'bg-transparent'
-              }`}
-            />
+              className="flex h-6 w-6 items-center justify-center"
+            >
+              <span
+                className={`block h-2 w-2 rounded-full border border-[#2c2419]/60 transition-colors ${
+                  dot === activeDot ? 'bg-[#2c2419]' : 'bg-transparent'
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

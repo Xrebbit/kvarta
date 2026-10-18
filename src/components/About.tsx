@@ -6,7 +6,7 @@ export default function About() {
     <section id="about" className="relative overflow-hidden bg-[#eee5d4] pb-12 text-[#1f1812] md:pb-0">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-multiply"
+        className="pointer-events-none absolute inset-0 opacity-100"
         style={{ backgroundImage: paperNoise }}
       />
 

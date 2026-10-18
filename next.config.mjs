@@ -2,11 +2,12 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"}`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isProd ? '' : " 'unsafe-eval'"}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  `connect-src 'self'${isProd ? '' : ' ws: wss:'}`,
+  `connect-src 'self' https://challenges.cloudflare.com${isProd ? '' : ' ws: wss:'}`,
+  'frame-src https://challenges.cloudflare.com',
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

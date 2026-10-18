@@ -30,6 +30,36 @@ const TEXT = {
 };
 
 const REQUEST_TIMEOUT_MS = 15000;
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+type TurnstileApi = {
+  render: (element: HTMLElement, options: Record<string, unknown>) => string;
+  reset: (widgetId?: string) => void;
+};
+
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi;
+  }
+}
+
+function loadTurnstile(): Promise<TurnstileApi | null> {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  return new Promise((resolve) => {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-turnstile]');
+    const script = existing ?? document.createElement('script');
+    script.addEventListener('load', () => resolve(window.turnstile ?? null));
+    script.addEventListener('error', () => resolve(null));
+    if (!existing) {
+      script.src = TURNSTILE_SCRIPT;
+      script.async = true;
+      script.defer = true;
+      script.dataset.turnstile = 'true';
+      document.head.appendChild(script);
+    }
+  });
+}
 const NAME_FORBIDDEN = /[^\p{L}\s'’.-]/gu;
 const NAME_VALID = /^\p{L}[\p{L}\s'’.-]*$/u;
 
@@ -73,6 +103,9 @@ export default function LeadModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const sendingRef = useRef(false);
+  const widgetBoxRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const tokenRef = useRef('');
 
   const [name, setName] = useState('');
   const [digits, setDigits] = useState('');
@@ -91,12 +124,40 @@ export default function LeadModal() {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
+    const mountTurnstile = () => {
+      void loadTurnstile().then((api) => {
+        const box = widgetBoxRef.current;
+        if (!api || !box) return;
+        if (widgetIdRef.current) {
+          api.reset(widgetIdRef.current);
+          tokenRef.current = '';
+          return;
+        }
+        widgetIdRef.current = api.render(box, {
+          sitekey: TURNSTILE_SITE_KEY,
+          appearance: 'interaction-only',
+          theme: 'light',
+          language: 'ru',
+          callback: (token: string) => {
+            tokenRef.current = token;
+          },
+          'expired-callback': () => {
+            tokenRef.current = '';
+          },
+          'error-callback': () => {
+            tokenRef.current = '';
+          },
+        });
+      });
+    };
+
     const sync = () => {
       const wantsOpen = window.location.hash === '#lead';
       if (wantsOpen && !dialog.open) {
         dialog.showModal();
         document.body.style.overflow = 'hidden';
         window.setTimeout(() => nameRef.current?.focus(), 30);
+        if (TURNSTILE_SITE_KEY) mountTurnstile();
       } else if (!wantsOpen && dialog.open) {
         dialog.close();
       }
@@ -158,6 +219,14 @@ export default function LeadModal() {
       return;
     }
 
+    if (TURNSTILE_SITE_KEY && !tokenRef.current) {
+      setNotice({
+        tone: 'info',
+        text: 'Идёт проверка безопасности. Подождите секунду и нажмите кнопку ещё раз.',
+      });
+      return;
+    }
+
     sendingRef.current = true;
     setStatus('sending');
 
@@ -175,6 +244,7 @@ export default function LeadModal() {
           interest,
           comment: comment.trim(),
           website: String(new FormData(event.currentTarget).get('website') ?? ''),
+          turnstileToken: tokenRef.current,
           ...getAttribution(),
         }),
       });
@@ -193,6 +263,8 @@ export default function LeadModal() {
         if (message.includes('номер')) setErrors({ phone: TEXT.phone });
         else if (message.includes('Имя')) setErrors({ name: message });
         else setNotice({ tone: 'error', text: message });
+      } else if (response.status === 403 || response.status === 503) {
+        setNotice({ tone: 'error', text: data?.message ?? TEXT.server });
       } else {
         setNotice({ tone: 'error', text: TEXT.server });
       }
@@ -202,6 +274,10 @@ export default function LeadModal() {
     } finally {
       window.clearTimeout(timeout);
       sendingRef.current = false;
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current);
+        tokenRef.current = '';
+      }
     }
   };
 
@@ -231,7 +307,7 @@ export default function LeadModal() {
           <div className="relative max-h-[calc(100dvh-24px)] w-full max-w-[728px] overflow-y-auto overflow-x-hidden bg-[#e4dac6] px-5 py-[clamp(16px,3.6vh,46px)] text-[#1f1812] shadow-[0_24px_70px_rgba(0,0,0,0.55)] md:px-[58px]">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply"
+              className="pointer-events-none absolute inset-0 opacity-100"
               style={{ backgroundImage: paperNoise }}
             />
             <Image
@@ -463,6 +539,8 @@ export default function LeadModal() {
                         {notice.text}
                       </p>
                     )}
+
+                    <div ref={widgetBoxRef} className="mt-3 empty:hidden" />
 
                     <button
                       type="submit"

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { normalizePhone } from '@/lib/validate-phone';
-import { checkIpLimit, checkRateLimit, clearSubmission, recordSubmission } from '@/lib/rate-limit';
+import { checkIp, releasePhone, reservePhone } from '@/lib/rate-limit';
 import { saveLead, type Lead } from '@/lib/storage';
 import { sendToTelegram } from '@/lib/telegram';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 const INTERESTS = ['subscription', 'one-time', 'question'];
 const MAX_BODY_BYTES = 10000;
@@ -41,9 +42,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return reject(415, 'Неподдерживаемый формат запроса');
     }
 
-    const ipLimit = checkIpLimit(getClientIp(req));
+    const clientIp = getClientIp(req);
+    const ipLimit = await checkIp(clientIp);
     if (!ipLimit.allowed) {
-      const minutes = Math.ceil((ipLimit.retryAfterMs ?? 0) / 60000);
+      const minutes = Math.ceil(ipLimit.retryAfterMs / 60000);
       return reject(429, `Слишком много запросов. Попробуйте через ${minutes} минут.`);
     }
 
@@ -107,15 +109,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const limit = checkRateLimit(normalizedPhone);
-    if (!limit.allowed) {
-      const minutes = Math.ceil((limit.retryAfterMs ?? 0) / 60000);
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Вы уже отправляли заявку недавно. Попробуйте через ${minutes} минут или позвоните нам напрямую.`,
-        },
-        { status: 429 }
+    const captcha = await verifyTurnstile(body.turnstileToken, clientIp);
+    if (captcha === 'failed') {
+      return reject(403, 'Проверка безопасности не пройдена. Обновите страницу и попробуйте ещё раз.');
+    }
+    if (captcha === 'unavailable') {
+      return reject(503, 'Проверка безопасности временно недоступна. Попробуйте через минуту.');
+    }
+
+    const reservation = await reservePhone(normalizedPhone);
+    if (!reservation.allowed) {
+      const minutes = Math.ceil(reservation.retryAfterMs / 60000);
+      return reject(
+        429,
+        `Вы уже отправляли заявку недавно. Попробуйте через ${minutes} минут или позвоните нам напрямую.`
       );
     }
 
@@ -144,8 +151,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       createdAt: new Date().toISOString(),
     };
 
-    recordSubmission(normalizedPhone);
-
     let saved = false;
     try {
       saveLead(lead);
@@ -157,7 +162,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const notified = await sendToTelegram(lead);
 
     if (!saved && !notified) {
-      clearSubmission(normalizedPhone);
+      await releasePhone(normalizedPhone);
       return NextResponse.json(
         {
           success: false,

@@ -19,6 +19,7 @@ const serif = localFont({
     { path: './fonts/source-serif-4-600.woff2', weight: '600', style: 'normal' },
   ],
   variable: '--font-serif',
+  preload: false,
   display: 'swap',
 });
 
@@ -33,13 +34,38 @@ const caveat = localFont({
   src: './fonts/caveat-500.woff2',
   weight: '500',
   variable: '--font-caveat',
+  preload: false,
   display: 'swap',
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'http://localhost:3000');
+
+const title = 'Кварта — свежий кофе из Минска';
+const description =
+  'Небольшая обжарка в Минске: партии по 5 кг, обжарка по четвергам, доставка по пятницам. Подписка и разовые заказы.';
+
 export const metadata: Metadata = {
-  title: 'Кварта — свежий кофе из Минска',
-  description:
-    'Небольшая обжарка в Минске. Обжариваем по четвергам, доставляем по пятницам. Подписка и разовые заказы.',
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: {
+    type: 'website',
+    locale: 'ru_BY',
+    siteName: 'Кварта',
+    title,
+    description,
+    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: 'Кварта — обжарка кофе в Минске' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: ['/og.jpg'],
+  },
 };
 
 export default function RootLayout({
